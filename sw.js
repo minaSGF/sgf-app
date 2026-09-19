@@ -1,4 +1,4 @@
-const CACHE = 'sgf-app-v1';
+const CACHE = 'sgf-app-v2';
 const SHELL = [
   './index.html',
   './manifest.webmanifest',
@@ -28,14 +28,18 @@ self.addEventListener('fetch', e => {
   // The Google Sheet API (JSONP) must always go to the network, never the cache
   if (url.hostname.endsWith('script.google.com') || url.hostname.endsWith('googleusercontent.com')) return;
 
-  // Opening the app: network first (so updates arrive), cached copy when offline
+  // Opening the app: network first (so updates arrive), but fall back to the saved
+  // copy when offline or when the connection is too slow (3.5s)
   if (req.mode === 'navigate') {
+    const fromNet = fetch(req).then(res => {
+      if (res.ok) { const copy = res.clone(); caches.open(CACHE).then(c => c.put('./index.html', copy)); }
+      return res;
+    });
+    fromNet.catch(() => {});
+    const slow = new Promise(r => setTimeout(() => r(null), 3500));
     e.respondWith(
-      fetch(req)
-        .then(res => {
-          if (res.ok) { const copy = res.clone(); caches.open(CACHE).then(c => c.put('./index.html', copy)); }
-          return res;
-        })
+      Promise.race([fromNet, slow])
+        .then(res => res || caches.match('./index.html').then(c => c || fromNet))
         .catch(() => caches.match('./index.html'))
     );
     return;

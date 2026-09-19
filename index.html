@@ -482,6 +482,7 @@
 
   <!-- LANDING -->
   <div id="landingView">
+    <div class="join-msg hidden" id="pendingBox" style="margin:0 0 14px;text-align:center;"></div>
     <div class="card">
       <p class="step-label">اهلاً بيك</p>
       <div class="landing-wrap">
@@ -558,7 +559,7 @@
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
       <h2 id="attConfirmMsg">تم تسجيل الحضور</h2>
-      <p>ربنا يبارك حضورك.</p>
+      <p id="attConfirmSub">ربنا يبارك حضورك.</p>
       <button class="home-btn" onclick="showView('landingView')">الصفحة الرئيسية</button>
     </div>
   </div>
@@ -622,7 +623,7 @@
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
       <h2>مبسوطين بوجودك وسطينا</h2>
-      <p>تم تسجيل بياناتك بنجاح.</p>
+      <p id="formConfirmSub">تم تسجيل بياناتك بنجاح.</p>
       <span class="again-msg">خلينا نشوفك تاني</span>
       <button class="home-btn" onclick="resetForm()">الصفحة الرئيسية</button>
     </div>
@@ -647,7 +648,7 @@
   <div class="credit">Design by Eng. Mina Adel</div>
 </div>
 
-<div class="offline-bar hidden" id="offlineBar">مفيش اتصال بالإنترنت</div>
+<div class="offline-bar hidden" id="offlineBar">مفيش اتصال بالإنترنت — اللي هتسجله هيتحفظ على الموبايل ويتبعت لما النت يرجع</div>
 
 <!-- Password modal -->
 <div class="modal-overlay hidden" id="modalOverlay">
@@ -789,17 +790,24 @@ async function confirmAttendance(){
   btn.disabled = true; btn.textContent = 'جاري التسجيل...';
 
   try{
-    const result = await jsonpRequest({
+    const result = await sendOrQueue({
       action: 'attendance',
       name: name,
       activity: pendingActivity,
       submittedAt: new Date().toISOString()
     });
+    const sub = document.getElementById('attConfirmSub');
     if(result && result.status === 'ok'){
       document.getElementById('attConfirmMsg').textContent = 'تم تسجيل الحضور: ' + pendingActivity;
+      sub.textContent = 'ربنا يبارك حضورك.';
+      showView('attendanceConfirmView');
+    } else if(result && result.status === 'queued'){
+      document.getElementById('attConfirmMsg').textContent = 'اتحفظ حضورك: ' + pendingActivity;
+      sub.textContent = 'مفيش نت دلوقتي، هيتسجل أول ما النت يرجع.';
       showView('attendanceConfirmView');
     } else if(result && result.status === 'already'){
       document.getElementById('attConfirmMsg').textContent = 'انت مسجل بالفعل في: ' + pendingActivity;
+      sub.textContent = 'ربنا يبارك حضورك.';
       showView('attendanceConfirmView');
     } else {
       errEl.textContent = 'حصلت مشكلة في الحفظ، حاول تاني';
@@ -823,7 +831,7 @@ async function submitOpinion(){
   btn.disabled = true; btn.textContent = 'جاري الإرسال...';
 
   try{
-    const result = await jsonpRequest({
+    const result = await sendOrQueue({
       action: 'feedback',
       name: name,
       activity: pendingActivity,
@@ -836,6 +844,11 @@ async function submitOpinion(){
       document.getElementById('attFeedbackInput').value = '';
       document.getElementById('attSuggestionInput').value = '';
       setTimeout(()=>{ btn.textContent = 'تسجيل الرأي'; }, 2500);
+    } else if(result && result.status === 'queued'){
+      btn.textContent = 'اتحفظ وهيتبعت لما النت يرجع';
+      document.getElementById('attFeedbackInput').value = '';
+      document.getElementById('attSuggestionInput').value = '';
+      setTimeout(()=>{ btn.textContent = 'تسجيل الرأي'; }, 3500);
     } else {
       errEl.textContent = 'حصلت مشكلة، حاول تاني';
       errEl.style.display = 'block';
@@ -921,6 +934,63 @@ function jsonpRequest(params){
   });
 }
 
+/* ===== Offline queue: save on the phone, send when the internet is back ===== */
+const QUEUE_KEY = 'sgf_queue';
+function readQueue(){
+  try{ return JSON.parse(localStorage.getItem(QUEUE_KEY) || '[]'); }catch(e){ return []; }
+}
+function writeQueue(q){
+  try{ localStorage.setItem(QUEUE_KEY, JSON.stringify(q)); }catch(e){ return false; }
+  updatePendingBox();
+  return true;
+}
+function queuePush(params){
+  const q = readQueue();
+  q.push({ id: Date.now() + '_' + Math.floor(Math.random()*1e6), params: params, tries: 0 });
+  return writeQueue(q);
+}
+function updatePendingBox(){
+  const box = document.getElementById('pendingBox');
+  if(!box) return;
+  const n = readQueue().length;
+  box.textContent = 'فيه ' + n + ' تسجيل محفوظ على الموبايل وهيتبعت أول ما النت يرجع';
+  box.classList.toggle('hidden', n === 0);
+}
+/* send now if possible, otherwise keep it on the phone */
+async function sendOrQueue(params){
+  if(navigator.onLine){
+    try{ return await jsonpRequest(params); }catch(e){}
+  }
+  if(!queuePush(params)) throw new Error('offline and could not save');
+  return { status:'queued' };
+}
+let flushing = false;
+async function flushQueue(){
+  if(flushing || !navigator.onLine) return;
+  flushing = true;
+  try{
+    const snapshot = readQueue();
+    const done = new Set();
+    const tried = {};
+    let stopped = false;
+    for(const item of snapshot){
+      if(stopped) break;
+      let res;
+      try{ res = await jsonpRequest(item.params); }
+      catch(e){ stopped = true; break; }          // still no real internet: try again later
+      const st = res && res.status;
+      if(st === 'ok' || st === 'duplicate' || st === 'already'){ done.add(item.id); }
+      else { tried[item.id] = (item.tries || 0) + 1; }
+    }
+    // re-read so anything queued while we were sending is not lost
+    const now = readQueue()
+      .filter(i => !done.has(i.id))
+      .map(i => tried[i.id] ? Object.assign({}, i, { tries: tried[i.id] }) : i)
+      .filter(i => (i.tries || 0) < 5);
+    writeQueue(now);
+  } finally { flushing = false; }
+}
+
 async function submitForm(){
   const name = document.getElementById('f_name').value.trim();
   const phone = document.getElementById('f_phone').value.trim();
@@ -951,8 +1021,11 @@ async function submitForm(){
   };
 
   try{
-    const result = await jsonpRequest(entry);
-    if(result && result.status === 'ok'){
+    const result = await sendOrQueue(entry);
+    if(result && (result.status === 'ok' || result.status === 'queued')){
+      document.getElementById('formConfirmSub').textContent = result.status === 'queued'
+        ? 'اتحفظت بياناتك على الموبايل، وهتتبعت أول ما النت يرجع.'
+        : 'تم تسجيل بياناتك بنجاح.';
       document.getElementById('formCard').classList.add('hidden');
       document.getElementById('confirmCard').classList.remove('hidden');
     } else if(result && result.status === 'duplicate'){
@@ -984,6 +1057,7 @@ function clearForm(){
   document.getElementById('missedMsg').classList.add('hidden');
   state = { year:null, dept:null, group:null, missed:null };
   document.getElementById('confirmCard').classList.add('hidden');
+  document.getElementById('formConfirmSub').textContent='تم تسجيل بياناتك بنجاح.';
   document.getElementById('formCard').classList.remove('hidden');
 }
 
@@ -1015,19 +1089,28 @@ function lockDash(){
 }
 
 let allEntries = [];
+let loadFailed = false;
 async function loadEntries(){
   document.getElementById('listBox').innerHTML = '<div class="empty">جاري التحميل...</div>';
   try{
     const entries = await jsonpRequest({action: 'list'});
     entries.sort((a,b)=> new Date(b.submittedAt) - new Date(a.submittedAt));
     allEntries = entries;
+    loadFailed = false;
   }catch(e){
     allEntries = [];
+    loadFailed = true;
   }
   renderList();
 }
 
 function renderList(){
+  if(loadFailed){
+    document.getElementById('statTotal').textContent = '—';
+    document.getElementById('statFlag').textContent = '—';
+    document.getElementById('listBox').innerHTML = '<div class="empty">لوحة المتابعة محتاجة اتصال بالإنترنت عشان تتحمّل</div>';
+    return;
+  }
   const q = (document.getElementById('searchBox').value || '').trim();
   const filtered = q ? allEntries.filter(e=>e.name.includes(q)) : allEntries;
 
@@ -1093,6 +1176,12 @@ function escapeHtml(s){
   window.addEventListener('online', syncOnline);
   window.addEventListener('offline', syncOnline);
   syncOnline();
+
+  window.addEventListener('online', flushQueue);
+  document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) flushQueue(); });
+  setInterval(flushQueue, 60000);
+  updatePendingBox();
+  flushQueue();
 
   if('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){
     window.addEventListener('load', ()=>{
