@@ -374,9 +374,33 @@
 
   /* Dashboard Partitions */
   .dash-partition{background:var(--card-bg);border:1px solid var(--line);border-radius:18px;padding:18px;margin:0 0 16px;box-shadow:0 12px 34px -28px rgba(91,31,36,.5);position:relative;overflow:hidden;}
-  .dash-partition{transition:box-shadow .22s ease,border-color .22s ease;}
+  .dash-partition{transition:box-shadow .32s ease,border-color .32s ease,transform .32s ease;}
   .dash-partition.is-collapsed{padding-bottom:0;}
   .dash-partition.is-collapsed > :not(.partition-head){display:none !important;}
+  @keyframes dashboardReveal{from{opacity:0;transform:translateY(28px) scale(.965);filter:blur(6px)}55%{opacity:.72}to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
+  @keyframes itemReveal{from{opacity:0;transform:translateY(18px) scale(.98);filter:blur(3px)}to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
+  @keyframes headerSettle{from{opacity:.35;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+  .dash-partition.is-opening{box-shadow:0 20px 48px -24px rgba(91,31,36,.38);}
+  .dash-partition.is-opening .partition-head{animation:headerSettle .8s ease both;}
+  .dash-partition.is-opening > :not(.partition-head){animation:dashboardReveal 1.35s cubic-bezier(.16,1,.3,1) both;}
+  .dash-partition.is-opening > :nth-child(2){animation-delay:.38s;}
+  .dash-partition.is-opening > :nth-child(3){animation-delay:.72s;}
+  .dash-partition.is-opening > :nth-child(4){animation-delay:1.06s;}
+  .birthday-card.is-opening > :not(.birthday-head),
+  .specialty-card.is-opening > .specialty-list{animation:dashboardReveal 1.25s cubic-bezier(.16,1,.3,1) both;}
+  .birthday-card.is-opening .birthday-item,
+  .birthday-card.is-opening .upcoming-month,
+  .specialty-card.is-opening .specialty-person{opacity:0;animation:itemReveal .72s cubic-bezier(.16,1,.3,1) both;}
+  .birthday-card.is-opening .birthday-item:nth-child(1),.birthday-card.is-opening .upcoming-month:nth-child(1),.specialty-card.is-opening .specialty-person:nth-child(1){animation-delay:.55s;}
+  .birthday-card.is-opening .birthday-item:nth-child(2),.birthday-card.is-opening .upcoming-month:nth-child(2),.specialty-card.is-opening .specialty-person:nth-child(2){animation-delay:.78s;}
+  .birthday-card.is-opening .birthday-item:nth-child(3),.birthday-card.is-opening .upcoming-month:nth-child(3),.specialty-card.is-opening .specialty-person:nth-child(3){animation-delay:1.01s;}
+  .birthday-card.is-opening .birthday-item:nth-child(4),.birthday-card.is-opening .upcoming-month:nth-child(4),.specialty-card.is-opening .specialty-person:nth-child(4){animation-delay:1.24s;}
+  .birthday-card.is-opening .birthday-item:nth-child(5),.birthday-card.is-opening .upcoming-month:nth-child(5),.specialty-card.is-opening .specialty-person:nth-child(5){animation-delay:1.47s;}
+  .birthday-card.is-opening .birthday-item:nth-child(n+6),.birthday-card.is-opening .upcoming-month:nth-child(n+6),.specialty-card.is-opening .specialty-person:nth-child(n+6){animation-delay:1.62s;}
+  .specialty-card{transition:box-shadow .3s ease,border-color .3s ease,transform .3s ease;}
+  .specialty-card:not(.is-collapsed){box-shadow:0 12px 28px -22px rgba(91,31,36,.65);transform:translateY(-1px);}
+  .birthday-card{transition:box-shadow .3s ease,border-color .3s ease,transform .3s ease;}
+  .birthday-card:not(.is-collapsed){box-shadow:0 14px 32px -24px rgba(91,31,36,.62);transform:translateY(-1px);}
   .birthday-card.is-collapsed > :not(.birthday-head){display:none !important;}
   .birthday-head{cursor:pointer;user-select:none;}
   .birthday-card.is-collapsed .birthday-head{margin-bottom:0;}
@@ -632,6 +656,91 @@
     .submit-btn:hover{transform:none;box-shadow:0 4px 14px -6px rgba(91,31,36,.4);}
     .theme-toggle:hover{transform:none;}
   }
+  /* Premium vertical landing-page entrance */
+  @keyframes pageSoftReveal{0%{opacity:0;transform:translateY(34px) scale(.965);filter:blur(7px)}45%{opacity:.62}100%{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
+  @keyframes pageFloatIn{0%{opacity:0;transform:translateY(24px) scale(.96);filter:blur(5px)}60%{opacity:.8}100%{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
+  @keyframes logoPremium{0%{opacity:0;transform:translateY(-18px) scale(.88);filter:blur(8px)}55%{opacity:.85}100%{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
+  .hero.premium-enter .org-title{animation:pageSoftReveal 1.25s cubic-bezier(.16,1,.3,1) both;}
+  .hero.premium-enter .logo-frame{animation:logoPremium 1.55s cubic-bezier(.16,1,.3,1) .22s both;}
+  .hero.premium-enter h1{animation:pageSoftReveal 1.2s cubic-bezier(.16,1,.3,1) .72s both;}
+  .hero.premium-enter .river{animation:pageFloatIn 1s cubic-bezier(.16,1,.3,1) 1.05s both;}
+  #landingView.premium-enter .card{animation:pageSoftReveal 1.45s cubic-bezier(.16,1,.3,1) .25s both;}
+  #landingView.premium-enter .big-btn{opacity:0;animation:pageFloatIn .95s cubic-bezier(.16,1,.3,1) both;}
+  #landingView.premium-enter .big-btn:nth-child(1){animation-delay:.95s;}
+  #landingView.premium-enter .big-btn:nth-child(2){animation-delay:1.22s;}
+  #landingView.premium-enter .admin-trigger{animation:pageFloatIn 1s cubic-bezier(.16,1,.3,1) 1.52s both;}
+  #landingView.premium-enter .install-trigger{animation:pageFloatIn 1s cubic-bezier(.16,1,.3,1) 1.78s both;}
+  #landingView.premium-enter #iosHint{animation:pageFloatIn .9s cubic-bezier(.16,1,.3,1) 2.02s both;}
+  #landingView.premium-enter .page-credit{animation:pageFloatIn .9s cubic-bezier(.16,1,.3,1) 2.28s both;}
+  @media (prefers-reduced-motion:reduce){
+    .hero.premium-enter > *,#landingView.premium-enter > *{animation:none!important;opacity:1!important;transform:none!important;filter:none!important;}
+  }
+
+  /* Registration journey — cartoon push transition */
+  #journeyOverlay{position:fixed;inset:0;z-index:120;pointer-events:none;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;background:radial-gradient(circle at 50% 50%,rgba(250,245,234,.98),rgba(250,245,234,.92));backdrop-filter:blur(5px);}
+  body.dark #journeyOverlay{background:radial-gradient(circle at 50% 50%,rgba(22,15,16,.98),rgba(22,15,16,.94));}
+  #journeyOverlay.active{opacity:1;visibility:visible;}
+  .journey-stage{position:relative;width:min(560px,92vw);height:min(430px,72vh);display:flex;align-items:center;justify-content:center;overflow:hidden;}
+  .cartoon-pusher{position:absolute;right:-80px;bottom:62px;width:118px;height:170px;z-index:4;opacity:0;transform:translateX(80px);}
+  #journeyOverlay.active .cartoon-pusher{animation:pusherPush 1.45s cubic-bezier(.16,1,.3,1) both;}
+  .cartoon-head{position:absolute;top:2px;left:31px;width:58px;height:58px;border-radius:50%;background:#f2bd8b;border:3px solid #5b1f24;box-shadow:inset -5px -3px 0 rgba(91,31,36,.08);}
+  .cartoon-hair{position:absolute;top:-5px;left:29px;width:62px;height:27px;border-radius:40px 40px 18px 18px;background:#3a2725;border:3px solid #5b1f24;z-index:2;}
+  .cartoon-eye{position:absolute;top:25px;width:6px;height:8px;border-radius:50%;background:#241a1b;z-index:3;}.cartoon-eye.one{left:17px}.cartoon-eye.two{right:17px}
+  .cartoon-body{position:absolute;top:59px;left:24px;width:72px;height:76px;border-radius:22px 22px 14px 14px;background:linear-gradient(135deg,#7a2a2f,#5b1f24);border:3px solid #5b1f24;}
+  .cartoon-arm{position:absolute;width:58px;height:15px;border-radius:12px;background:#f2bd8b;border:3px solid #5b1f24;top:73px;z-index:1;}
+  .cartoon-arm.a{left:-18px;transform:rotate(13deg)}.cartoon-arm.b{left:54px;transform:rotate(-12deg)}
+  .cartoon-hand{position:absolute;left:-23px;top:72px;width:26px;height:26px;border-radius:50%;background:#f2bd8b;border:3px solid #5b1f24;z-index:3;}
+  .cartoon-leg{position:absolute;top:128px;width:18px;height:48px;border-radius:12px;background:#16324f;border:3px solid #5b1f24;}.cartoon-leg.l{left:34px;transform:rotate(7deg)}.cartoon-leg.r{left:70px;transform:rotate(-8deg)}
+  .push-panel{position:absolute;left:24px;top:82px;width:330px;height:185px;border:2px solid var(--line);border-radius:22px;background:linear-gradient(145deg,var(--card-bg),var(--input-bg));box-shadow:0 22px 55px -25px rgba(91,31,36,.45);transform:translateX(0);opacity:1;z-index:2;overflow:hidden;}
+  .push-panel::before{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 30%,rgba(201,162,39,.18),transparent 65%);transform:translateX(-120%);}
+  #journeyOverlay.active .push-panel{animation:panelPush 1.45s cubic-bezier(.16,1,.3,1) both;}
+  #journeyOverlay.active .push-panel::before{animation:panelShine 1.1s ease .2s both;}
+  .push-panel .mini-line{height:10px;border-radius:999px;background:var(--line);margin:25px 28px 0;opacity:.7}.push-panel .mini-line.short{width:52%;margin-top:13px}.push-panel .mini-btn{width:72%;height:34px;border-radius:11px;background:var(--maroon);margin:28px auto 0;opacity:.85;}
+  .journey-caption{position:absolute;bottom:10px;left:0;right:0;text-align:center;font-family:'Cairo',sans-serif;font-weight:800;font-size:16px;color:var(--maroon);opacity:0;transform:translateY(8px);}
+  #journeyOverlay.active .journey-caption{animation:captionIn .65s ease .65s both;}
+  @keyframes pusherPush{0%{opacity:0;transform:translateX(100px)}35%{opacity:1}100%{opacity:1;transform:translateX(-35px)}}
+  @keyframes panelPush{0%{transform:translateX(0) scale(1);opacity:1}38%{transform:translateX(-25px) scale(1.01)}100%{transform:translateX(-430px) scale(.96);opacity:0}}
+  @keyframes panelShine{0%{transform:translateX(-120%)}100%{transform:translateX(130%)}}
+  @keyframes captionIn{to{opacity:1;transform:translateY(0)}}
+  @keyframes formJourneyIn{0%{opacity:0;transform:translateX(90px) scale(.97);filter:blur(6px)}60%{opacity:.8}100%{opacity:1;transform:translateX(0) scale(1);filter:blur(0)}}
+  #landingView.journey-push-out .card{animation:landingPushOut 1.25s cubic-bezier(.16,1,.3,1) both;}
+  #landingView.journey-push-out .hero{animation:landingHeroPushOut 1.15s cubic-bezier(.16,1,.3,1) both;}
+  @keyframes landingPushOut{to{transform:translateX(-105vw) rotate(-2deg);opacity:.2;filter:blur(3px)}}
+  @keyframes landingHeroPushOut{to{transform:translateX(-55vw);opacity:0;filter:blur(4px)}}
+  #formView.form-journey-enter .card:first-child{animation:formJourneyIn 1.15s cubic-bezier(.16,1,.3,1) both;}
+  #formView.form-journey-enter .card:first-child > *{animation:pageFloatIn .7s cubic-bezier(.16,1,.3,1) both;}
+  #formView.form-journey-enter .card:first-child > *:nth-child(1){animation-delay:.15s}.form-journey-enter .card:first-child > *:nth-child(2){animation-delay:.24s}.form-journey-enter .card:first-child > *:nth-child(3){animation-delay:.32s}.form-journey-enter .card:first-child > *:nth-child(4){animation-delay:.40s}.form-journey-enter .card:first-child > *:nth-child(5){animation-delay:.48s}.form-journey-enter .card:first-child > *:nth-child(6){animation-delay:.56s}
+
+  .success-premium{animation:successPremium 1.15s cubic-bezier(.16,1,.3,1) both!important;}
+  @keyframes successPremium{0%{opacity:0;transform:translateY(28px) scale(.92);filter:blur(7px)}55%{opacity:.8}100%{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
+
+  /* Rocket data collection */
+  #rocketOverlay{position:fixed;inset:0;z-index:130;display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:0;visibility:hidden;background:radial-gradient(circle at 50% 72%,rgba(250,245,234,.97),rgba(250,245,234,.88));backdrop-filter:blur(7px);overflow:hidden;}
+  body.dark #rocketOverlay{background:radial-gradient(circle at 50% 72%,rgba(22,15,16,.98),rgba(22,15,16,.92));}
+  #rocketOverlay.active{opacity:1;visibility:visible;}
+  .rocket-scene{position:relative;width:min(560px,94vw);height:100%;overflow:hidden;}
+  .rocket{position:absolute;left:50%;bottom:-130px;transform:translateX(-50%) rotate(0deg);width:92px;height:145px;z-index:5;}
+  #rocketOverlay.active .rocket{animation:rocketLaunch 2.7s cubic-bezier(.2,.8,.2,1) .25s both;}
+  .rocket-body{position:absolute;left:18px;top:18px;width:56px;height:92px;border-radius:50% 50% 28% 28%;background:linear-gradient(90deg,#e7e1d5,#fff,#d3c9b7);border:3px solid #5b1f24;box-shadow:0 8px 20px rgba(91,31,36,.18);}
+  .rocket-window{position:absolute;left:31px;top:38px;width:29px;height:29px;border-radius:50%;background:#16324f;border:4px solid #c9a227;box-shadow:inset 0 0 0 3px rgba(255,255,255,.18);}
+  .rocket-fin{position:absolute;top:87px;width:23px;height:38px;background:#7a2a2f;border:3px solid #5b1f24;z-index:-1;}.rocket-fin.l{left:6px;transform:skewY(25deg);border-radius:4px 4px 12px 4px}.rocket-fin.r{right:6px;transform:skewY(-25deg);border-radius:4px 4px 4px 12px}
+  .rocket-fire{position:absolute;left:27px;top:102px;width:38px;height:62px;background:linear-gradient(#e0c266,#c9a227,#a94438,transparent);clip-path:polygon(20% 0,80% 0,100% 55%,50% 100%,0 55%);filter:drop-shadow(0 0 10px rgba(201,162,39,.5));transform-origin:50% 0;}
+  #rocketOverlay.active .rocket-fire{animation:fireFlicker .18s ease-in-out infinite alternate;}
+  .data-chip{position:absolute;left:50%;top:52%;transform:translate(-50%,0);padding:9px 14px;border-radius:999px;background:var(--card-bg);border:1px solid var(--gold);box-shadow:0 10px 25px -15px rgba(91,31,36,.5);font-family:'Cairo',sans-serif;font-weight:700;font-size:12px;color:var(--maroon);z-index:3;opacity:0;}
+  #rocketOverlay.active .data-chip{animation:dataCollect 1.05s cubic-bezier(.2,.8,.2,1) both;}
+  #rocketOverlay.active .chip-1{animation-delay:.15s}.chip-2{animation-delay:.38s}.chip-3{animation-delay:.61s}.chip-4{animation-delay:.84s}.chip-5{animation-delay:1.07s}
+  .rocket-title{position:absolute;top:18%;left:0;right:0;text-align:center;font-family:'Cairo',sans-serif;font-weight:800;font-size:22px;color:var(--maroon);opacity:0;}
+  #rocketOverlay.active .rocket-title{animation:captionIn .7s ease both;}
+  .rocket-sub{position:absolute;top:calc(18% + 42px);left:0;right:0;text-align:center;color:var(--muted-2);font-size:13px;opacity:0;}
+  #rocketOverlay.active .rocket-sub{animation:captionIn .7s ease .18s both;}
+  @keyframes rocketLaunch{0%{bottom:-130px;transform:translateX(-50%) rotate(0deg);opacity:0}12%{opacity:1}28%{transform:translateX(-50%) rotate(-2deg)}70%{transform:translateX(-50%) rotate(2deg)}100%{bottom:115%;transform:translateX(-50%) rotate(0deg);opacity:1}}
+  @keyframes fireFlicker{from{transform:scaleY(.82) scaleX(.88)}to{transform:scaleY(1.14) scaleX(1.08)}}
+  @keyframes dataCollect{0%{opacity:0;transform:translate(-50%,55vh) scale(.7)}18%{opacity:1}70%{opacity:1;transform:translate(-50%,0) scale(1)}100%{opacity:0;transform:translate(-50%,-80px) scale(.45)}}
+  .rocket-spark{position:absolute;width:5px;height:5px;border-radius:50%;background:var(--gold);left:50%;bottom:26%;opacity:0;}
+  #rocketOverlay.active .rocket-spark{animation:sparkRise 1.2s linear infinite;}.rocket-spark.s1{margin-left:-70px;animation-delay:.1s!important}.rocket-spark.s2{margin-left:65px;animation-delay:.35s!important}.rocket-spark.s3{margin-left:-28px;animation-delay:.55s!important}
+  @keyframes sparkRise{0%{transform:translateY(30px) scale(.5);opacity:0}25%{opacity:1}100%{transform:translateY(-240px) scale(0);opacity:0}}
+  @media (prefers-reduced-motion:reduce){#journeyOverlay,#rocketOverlay{display:none!important}.form-journey-enter .card:first-child{animation:none!important;}}
+
   .admin-trigger.install-trigger{margin-top:12px;}
   .offline-bar{
     position:fixed;left:0;right:0;bottom:0;z-index:70;text-align:center;
@@ -646,6 +755,9 @@
   <svg class="sun-icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4.5" stroke="#e8c34f" stroke-width="1.8"/><path d="M12 2v2.5M12 19.5V22M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2 12h2.5M19.5 12H22M4.2 19.8L6 18M18 6l1.8-1.8" stroke="#e8c34f" stroke-width="1.8" stroke-linecap="round"/></svg>
 </button>
 <div class="floaters" id="floaters"></div>
+<div id="journeyOverlay" aria-hidden="true"><div class="journey-stage"><div class="push-panel"><div class="mini-line"></div><div class="mini-line short"></div><div class="mini-btn"></div></div><div class="cartoon-pusher"><div class="cartoon-hair"></div><div class="cartoon-head"><span class="cartoon-eye one"></span><span class="cartoon-eye two"></span></div><div class="cartoon-arm a"></div><div class="cartoon-arm b"></div><div class="cartoon-hand"></div><div class="cartoon-body"></div><div class="cartoon-leg l"></div><div class="cartoon-leg r"></div></div><div class="journey-caption">يلا بينا نسجّل بياناتك ✨</div></div></div>
+<div id="rocketOverlay" aria-hidden="true"><div class="rocket-scene"><div class="rocket-title">بنجهّز بياناتك 🚀</div><div class="rocket-sub">لحظة واحدة... الصاروخ بيجمع كل بياناتك</div><div class="data-chip chip-1">الاسم</div><div class="data-chip chip-2">رقم التليفون</div><div class="data-chip chip-3">السنة والتخصص</div><div class="data-chip chip-4">عيد الميلاد</div><div class="data-chip chip-5">المحافظة والبيانات</div><div class="rocket"><div class="rocket-fin l"></div><div class="rocket-fin r"></div><div class="rocket-body"></div><div class="rocket-window"></div><div class="rocket-fire"></div></div><i class="rocket-spark s1"></i><i class="rocket-spark s2"></i><i class="rocket-spark s3"></i></div></div>
+
 <div class="wrap">
 
   <div class="hero">
@@ -671,7 +783,7 @@
     <div class="card">
       <p class="step-label">اهلاً بيك</p>
       <div class="landing-wrap">
-        <button class="big-btn" onclick="showView('formView')">
+        <button class="big-btn new-user-btn" onclick="startRegistrationJourney()">
           <span class="icon">
             <svg viewBox="0 0 24 24" fill="none"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM19 8v6M22 11h-6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </span>
@@ -1058,6 +1170,39 @@ let currentView = 'landingView';
 let navDepth = 0;
 try{ history.replaceState({v:'landingView', d:0}, ''); }catch(e){}
 
+function startRegistrationJourney(){
+  const overlay=document.getElementById('journeyOverlay');
+  const landing=document.getElementById('landingView');
+  if(!overlay || !landing){ showView('formView'); return; }
+  overlay.classList.add('active');
+  landing.classList.add('journey-push-out');
+  setTimeout(()=>{
+    overlay.classList.remove('active');
+    landing.classList.remove('journey-push-out');
+    showView('formView');
+    const form=document.getElementById('formView');
+    form.classList.remove('form-journey-enter');
+    void form.offsetWidth;
+    form.classList.add('form-journey-enter');
+    clearTimeout(window.__formJourneyTimer);
+    window.__formJourneyTimer=setTimeout(()=>form.classList.remove('form-journey-enter'),2600);
+  },1450);
+}
+
+function openRocketJourney(){
+  const overlay=document.getElementById('rocketOverlay');
+  if(!overlay) return Promise.resolve();
+  overlay.classList.remove('active');
+  void overlay.offsetWidth;
+  overlay.classList.add('active');
+  return new Promise(resolve=>setTimeout(resolve,3000));
+}
+function closeRocketJourney(){
+  const overlay=document.getElementById('rocketOverlay');
+  if(!overlay) return;
+  overlay.classList.remove('active');
+}
+
 function showView(id, fromPop){
   // going "home" from a deeper screen: unwind the history so the phone's back button stays sane
   if(id === 'landingView' && !fromPop && navDepth > 0){
@@ -1071,8 +1216,28 @@ function showView(id, fromPop){
     try{ history.pushState({v:id, d:navDepth+1}, ''); navDepth++; }catch(e){}
   }
   currentView = id;
+  if(id === 'landingView') startLandingPremium();
   window.scrollTo(0,0);
 }
+
+function startLandingPremium(){
+  const landing=document.getElementById('landingView');
+  const hero=document.querySelector('.hero');
+  if(!landing || !hero) return;
+  landing.classList.remove('premium-enter');
+  hero.classList.remove('premium-enter');
+  void landing.offsetWidth;
+  void hero.offsetWidth;
+  landing.classList.add('premium-enter');
+  hero.classList.add('premium-enter');
+  clearTimeout(window.__landingPremiumTimer);
+  window.__landingPremiumTimer=setTimeout(()=>{
+    landing.classList.remove('premium-enter');
+    hero.classList.remove('premium-enter');
+  },4200);
+}
+
+setTimeout(startLandingPremium, 80);
 
 /* phone back button: step back one screen instead of closing the app */
 const VIEW_PARENT = { attendancePwView:'attendanceMenuView', attendanceConfirmView:'landingView', dashView:'landingView' };
@@ -1147,10 +1312,12 @@ async function confirmAttendance(){
       sub.textContent = 'ربنا يبارك حضورك.';
       showView('attendanceConfirmView');
     } else {
+      closeRocketJourney();
       errEl.textContent = 'حصلت مشكلة في الحفظ، حاول تاني';
       errEl.style.display = 'block';
     }
   }catch(e){
+    closeRocketJourney();
     errEl.textContent = 'حصلت مشكلة في الاتصال، حاول تاني';
     errEl.style.display = 'block';
   }
@@ -1343,7 +1510,9 @@ async function submitForm(){
   errEl.style.display = 'none';
 
   const btn = document.getElementById('submitBtn');
-  btn.disabled = true; btn.textContent = 'جاري التسجيل...';
+  btn.disabled = true; btn.textContent = 'جاري الإرسال...';
+
+  const rocketJourney = openRocketJourney();
 
   const entry = {
     action: 'submit',
@@ -1360,12 +1529,17 @@ async function submitForm(){
   try{
     const result = await sendOrQueue(entry);
     if(result && (result.status === 'ok' || result.status === 'queued')){
+      await rocketJourney;
+      closeRocketJourney();
       document.getElementById('formConfirmSub').textContent = result.status === 'queued'
         ? 'اتحفظت بياناتك على الموبايل، وهتتبعت أول ما النت يرجع.'
         : 'تم تسجيل بياناتك بنجاح.';
       document.getElementById('formCard').classList.add('hidden');
       document.getElementById('confirmCard').classList.remove('hidden');
+      const confirm=document.getElementById('confirmCard');
+      confirm.classList.remove('success-premium'); void confirm.offsetWidth; confirm.classList.add('success-premium');
     } else if(result && result.status === 'duplicate'){
+      closeRocketJourney();
       errEl.textContent = 'رقم التليفون ده مسجل قبل كده';
       errEl.style.display = 'block';
     } else {
@@ -1472,7 +1646,8 @@ function whatsappNumber(phone){
 }
 function whatsappLink(phone,name){
   const n=whatsappNumber(phone); if(!n) return '';
-  return 'https://wa.me/'+n+'?text='+encodeURIComponent('افتقدناك يا '+String(name||'')+' ❤️');
+  const firstName=String(name||'').trim().split(/\s+/)[0]||'';
+  return 'https://wa.me/'+n+'?text='+encodeURIComponent('مبسوط إنك موجود يا '+firstName+' وسطينا في الأسرة ومستنينك المرة الجاية ❤️');
 }
 function whatsappButton(e){
   const href=whatsappLink(e.phone,e.name); if(!href) return '';
@@ -1496,18 +1671,31 @@ function renderBirthdays(){
   upcomingBox.innerHTML=Object.keys(groups).sort((a,b)=>{const da=((+a-currentMonth+12)%12)||12,db=((+b-currentMonth+12)%12)||12;return da-db;}).map(m=>`<div class="upcoming-month"><div class="upcoming-month-head"><strong>${BIRTHDAY_MONTHS[+m-1]}</strong><span>${groups[m].length} عيد ميلاد</span></div>${groups[m].map(x=>renderBirthdayPerson(x.entry,x.birthday,true)).join('')}</div>`).join('');
 }
 
+function animateOpen(section, selector){
+  if(!section) return;
+  section.classList.remove('is-opening');
+  void section.offsetWidth;
+  section.classList.add('is-opening');
+  setTimeout(()=>section.classList.remove('is-opening'), 2800);
+}
 function toggleDashboardPartition(section){
   if(!section) return;
+  const opening = section.classList.contains('is-collapsed');
   section.classList.toggle('is-collapsed');
+  if(opening) animateOpen(section);
 }
 
 function toggleSpecialtyPartition(card){
   if(!card) return;
+  const opening = card.classList.contains('is-collapsed');
   card.classList.toggle('is-collapsed');
+  if(opening) animateOpen(card);
 }
 function toggleBirthdayCard(card){
   if(!card) return;
+  const opening = card.classList.contains('is-collapsed');
   card.classList.toggle('is-collapsed');
+  if(opening) animateOpen(card);
 }
 
 
